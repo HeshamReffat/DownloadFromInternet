@@ -86,7 +86,8 @@ class LoadingButton @JvmOverloads constructor(
                 (width * (animationProgress / 100)).toFloat(), height.toFloat(), paint
             )
             paint.color = Color.parseColor("#F9A825")
-            canvas?.drawArc((widthSize -40 ).toFloat(), (heightSize - 50).toFloat(), (widthSize-120).toFloat(), (heightSize - 100).toFloat(),0f, (360 * (animationProgress / 100)).toFloat(), true, paint)
+            canvas?.drawArc(rect,0f, (360 * (animationProgress / 100)).toFloat(), true, paint)
+            //canvas?.drawArc((widthSize -40 ).toFloat(), (heightSize - 50).toFloat(), (widthSize-120).toFloat(), (heightSize - 100).toFloat(),0f, (360 * (animationProgress / 100)).toFloat(), true, paint)
             paint.color = tColor
             canvas?.drawText(
                 resources.getString(R.string.button_loading), (width / 2).toFloat(), ((height + 30) / 2).toFloat(),
