@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                     DownloadManager.STATUS_FAILED -> {
                         custom_button.cancelAnimation()
                         seeMoreIntent.putExtra("status",false)
-                        seeMoreIntent.putExtra("name","name")
+                        seeMoreIntent.putExtra("name","$NAME")
                         seeMorePendingIntent = PendingIntent.getActivity(
                             applicationContext, 0, seeMoreIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT

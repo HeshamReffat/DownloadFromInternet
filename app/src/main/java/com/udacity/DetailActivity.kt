@@ -3,9 +3,9 @@ package com.udacity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NavUtils
 import kotlinx.android.synthetic.main.activity_detail.*
 
 
@@ -20,10 +20,9 @@ class DetailActivity : AppCompatActivity() {
         val name = downloadData.getString("name")
         val nameTextView = findViewById<TextView>(R.id.nameText)
         val statusTextView = findViewById<TextView>(R.id.statusText)
-        val okButton = findViewById<TextView>(R.id.okButton)
+        val okButton = findViewById<Button>(R.id.okButton)
         okButton.setOnClickListener{
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            this.finish();
         }
         nameTextView.text = name
         if(status){

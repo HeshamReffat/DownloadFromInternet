@@ -69,15 +69,13 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        if (buttonState == ButtonState.Completed) {
-            paint.color = Color.BLACK
-            canvas?.drawText(
-                resources.getString(R.string.button_name),
-                (width / 2).toFloat(),
-                ((height + 30) / 2).toFloat(),
-                paint
-            )
-        }
+        paint.color = Color.BLACK
+        canvas?.drawText(
+            resources.getString(R.string.button_name),
+            (width / 2).toFloat(),
+            ((height + 30) / 2).toFloat(),
+            paint
+        )
 
         paint.strokeWidth = 0f
         paint.color = bgColor
