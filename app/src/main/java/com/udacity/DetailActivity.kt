@@ -1,11 +1,14 @@
 package com.udacity
 
+import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_detail.*
 
 
@@ -16,13 +19,19 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
         downloadData = intent.extras!!
+        val notificationManager = ContextCompat.getSystemService(
+            applicationContext,
+            NotificationManager::class.java
+        ) as NotificationManager
+        notificationManager.cancelAll()
         val status = downloadData.getBoolean("status")
         val name = downloadData.getString("name")
         val nameTextView = findViewById<TextView>(R.id.nameText)
         val statusTextView = findViewById<TextView>(R.id.statusText)
         val okButton = findViewById<Button>(R.id.okButton)
         okButton.setOnClickListener{
-            this.finish();
+            Log.i("backButton","Presssssssed")
+            finish()
         }
         nameTextView.text = name
         if(status){

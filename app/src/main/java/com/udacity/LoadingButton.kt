@@ -16,21 +16,20 @@ class LoadingButton @JvmOverloads constructor(
     private var heightSize = 0
     private var bgColor = Color.BLACK
     private var tColor = Color.BLACK
-    private var progress = 0.0
+    private var animationProgress = 0.0
     private var valueAnimator = ValueAnimator()
 
-    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
+    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
 
     }
     private val updateAnimation = ValueAnimator.AnimatorUpdateListener {
-        progress = (it.animatedValue as Float).toDouble()
+        animationProgress = (it.animatedValue as Float).toDouble()
         invalidate()
         requestLayout()
     }
 
     init {
         isClickable = true
-        isInEditMode
         valueAnimator = AnimatorInflater.loadAnimator(
             context, R.animator.loading_animation
         ) as ValueAnimator
@@ -68,34 +67,29 @@ class LoadingButton @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-
-        paint.color = Color.BLACK
-        canvas?.drawText(
-            resources.getString(R.string.button_name),
-            (width / 2).toFloat(),
-            ((height + 30) / 2).toFloat(),
-            paint
-        )
-
         paint.strokeWidth = 0f
         paint.color = bgColor
         canvas?.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        if(buttonState != ButtonState.Loading) {
+            paint.color = Color.WHITE
+            canvas?.drawText(
+                resources.getString(R.string.button_name),
+                (width / 2).toFloat(),
+                ((height + 30) / 2).toFloat(),
+                paint
+            )
+        }
         if (buttonState == ButtonState.Loading) {
             paint.color = Color.parseColor("#004349")
             canvas?.drawRect(
                 0f, 0f,
-                (width * (progress / 100)).toFloat(), height.toFloat(), paint
+                (width * (animationProgress / 100)).toFloat(), height.toFloat(), paint
             )
             paint.color = Color.parseColor("#F9A825")
-            canvas?.drawArc(rect, 0f, (360 * (progress / 100)).toFloat(), true, paint)
-            val buttonText =
-                if (buttonState == ButtonState.Loading)
-                    resources.getString(R.string.button_loading)
-                else resources.getString(R.string.button_name)
-
+            canvas?.drawArc((widthSize -40 ).toFloat(), (heightSize - 50).toFloat(), (widthSize-120).toFloat(), (heightSize - 100).toFloat(),0f, (360 * (animationProgress / 100)).toFloat(), true, paint)
             paint.color = tColor
             canvas?.drawText(
-                buttonText, (width / 2).toFloat(), ((height + 30) / 2).toFloat(),
+                resources.getString(R.string.button_loading), (width / 2).toFloat(), ((height + 30) / 2).toFloat(),
                 paint
             )
         }

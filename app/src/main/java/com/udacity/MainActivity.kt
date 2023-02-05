@@ -1,6 +1,5 @@
 package com.udacity
 
-import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,7 +8,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -35,9 +33,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-//        val radioGlide = findViewById<RadioButton>(R.id.radioGlide)
-//        val radioRetro = findViewById<RadioButton>(R.id.radioRetro)
-//        val radioUdacity = findViewById<RadioButton>(R.id.radioUdacity)
         notificationManager = ContextCompat.getSystemService(
             applicationContext,
             NotificationManager::class.java
@@ -89,16 +84,16 @@ class MainActivity : AppCompatActivity() {
 
             if (cursor.moveToFirst()) {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-
+                Log.i("sssss", status.toString())
                 when (status) {
                     DownloadManager.STATUS_SUCCESSFUL -> {
 
                         custom_button.cancelAnimation()
-                        seeMoreIntent.putExtra("status",true)
-                        seeMoreIntent.putExtra("name","$NAME")
-                         seeMorePendingIntent = PendingIntent.getActivity(
+                        seeMoreIntent.putExtra("status", true)
+                        seeMoreIntent.putExtra("name", "$NAME")
+                        seeMorePendingIntent = PendingIntent.getActivity(
                             applicationContext, 0, seeMoreIntent,
-                            PendingIntent.FLAG_CANCEL_CURRENT
+                            PendingIntent.FLAG_UPDATE_CURRENT
                         )
                         notificationManager.sendNotification()
                         Toast.makeText(
@@ -109,11 +104,11 @@ class MainActivity : AppCompatActivity() {
                     }
                     DownloadManager.STATUS_FAILED -> {
                         custom_button.cancelAnimation()
-                        seeMoreIntent.putExtra("status",false)
-                        seeMoreIntent.putExtra("name","$NAME")
+                        seeMoreIntent.putExtra("status", false)
+                        seeMoreIntent.putExtra("name", "$NAME")
                         seeMorePendingIntent = PendingIntent.getActivity(
                             applicationContext, 0, seeMoreIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT
+                            PendingIntent.FLAG_ONE_SHOT
                         )
                         notificationManager.sendNotification()
                         Toast.makeText(
@@ -149,13 +144,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun NotificationManager.sendNotification() {
-//        val contentIntent = Intent(applicationContext, receiver::class.java)
-//        val contentPendingIntent = PendingIntent.getBroadcast(
-//            applicationContext,
-//            0,
-//            contentIntent,
-//            PendingIntent.FLAG_UPDATE_CURRENT
-//        )
 
         val builder = NotificationCompat.Builder(
             applicationContext,
@@ -170,7 +158,6 @@ class MainActivity : AppCompatActivity() {
 
         notify(0, builder.build())
     }
-
     companion object {
         private var URL: String? = null
         private var NAME: String? = null
