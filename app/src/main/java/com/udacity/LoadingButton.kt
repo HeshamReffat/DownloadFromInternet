@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import kotlin.properties.Delegates
@@ -18,9 +19,23 @@ class LoadingButton @JvmOverloads constructor(
     private var tColor = Color.BLACK
     private var animationProgress = 0.0
     private var valueAnimator = ValueAnimator()
+    var buttonText = R.string.button_name
 
-    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
+    var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { _, _, newState ->
 
+        when (newState) {
+            ButtonState.Loading -> {
+                valueAnimator.start()
+                buttonText = R.string.button_loading
+            }
+            ButtonState.Completed -> {
+                valueAnimator.cancel()
+                buttonText = R.string.button_name
+                animationProgress = 0.0
+                invalidate()
+                requestLayout()
+            }
+        }
     }
     private val updateAnimation = ValueAnimator.AnimatorUpdateListener {
         animationProgress = (it.animatedValue as Float).toDouble()
@@ -58,42 +73,31 @@ class LoadingButton @JvmOverloads constructor(
 
     }
 
-    private val rect = RectF(
-        740f,
-        50f,
-        810f,
-        110f
-    )
 
     override fun onDraw(canvas: Canvas?) {
+        val left = (widthSize * .85).toFloat()
+        val top = (heightSize * .3).toFloat()
+        val right = left + 80f
+        val bottom = top + 80f
         super.onDraw(canvas)
         paint.strokeWidth = 0f
         paint.color = bgColor
         canvas?.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
-        if(buttonState != ButtonState.Loading) {
-            paint.color = Color.WHITE
-            canvas?.drawText(
-                resources.getString(R.string.button_name),
-                (width / 2).toFloat(),
-                ((height + 30) / 2).toFloat(),
-                paint
-            )
-        }
-        if (buttonState == ButtonState.Loading) {
             paint.color = Color.parseColor("#004349")
             canvas?.drawRect(
                 0f, 0f,
                 (width * (animationProgress / 100)).toFloat(), height.toFloat(), paint
             )
             paint.color = Color.parseColor("#F9A825")
-            canvas?.drawArc(rect,0f, (360 * (animationProgress / 100)).toFloat(), true, paint)
-            //canvas?.drawArc((widthSize -40 ).toFloat(), (heightSize - 50).toFloat(), (widthSize-120).toFloat(), (heightSize - 100).toFloat(),0f, (360 * (animationProgress / 100)).toFloat(), true, paint)
+            // canvas?.drawArc(rect,0f, (360 * (animationProgress / 100)).toFloat(), true, paint)
+            canvas?.drawArc(left,top,right,bottom, 0f, (360 * (animationProgress / 100)).toFloat(), true, paint)
             paint.color = tColor
             canvas?.drawText(
-                resources.getString(R.string.button_loading), (width / 2).toFloat(), ((height + 30) / 2).toFloat(),
+                resources.getString(buttonText),
+                (width / 2).toFloat(),
+                ((height + 30) / 2).toFloat(),
                 paint
             )
-        }
     }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -101,21 +105,6 @@ class LoadingButton @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         textSize = 55.0f
         typeface = Typeface.create("", Typeface.BOLD)
-    }
-
-    override fun performClick(): Boolean {
-        super.performClick()
-        if (buttonState == ButtonState.Completed) buttonState = ButtonState.Loading
-        valueAnimator.start()
-        return true
-    }
-
-    fun cancelAnimation() {
-        valueAnimator.cancel()
-
-        buttonState = ButtonState.Completed
-        invalidate()
-        requestLayout()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -128,6 +117,7 @@ class LoadingButton @JvmOverloads constructor(
         )
         widthSize = w
         heightSize = h
+
         setMeasuredDimension(w, h)
     }
 

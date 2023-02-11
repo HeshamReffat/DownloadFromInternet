@@ -31,6 +31,7 @@ class DetailActivity : AppCompatActivity() {
         val okButton = findViewById<Button>(R.id.okButton)
         okButton.setOnClickListener{
             Log.i("backButton","Presssssssed")
+            //Todo we call finish to navigate up to the main activity
             finish()
         }
         nameTextView.text = name

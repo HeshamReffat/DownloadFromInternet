@@ -84,11 +84,10 @@ class MainActivity : AppCompatActivity() {
 
             if (cursor.moveToFirst()) {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                Log.i("sssss", status.toString())
                 when (status) {
                     DownloadManager.STATUS_SUCCESSFUL -> {
 
-                        custom_button.cancelAnimation()
+                        custom_button.buttonState = ButtonState.Completed
                         seeMoreIntent.putExtra("status", true)
                         seeMoreIntent.putExtra("name", "$NAME")
                         seeMorePendingIntent = PendingIntent.getActivity(
@@ -103,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                         ).show()
                     }
                     DownloadManager.STATUS_FAILED -> {
-                        custom_button.cancelAnimation()
+                        custom_button.buttonState = ButtonState.Completed
                         seeMoreIntent.putExtra("status", false)
                         seeMoreIntent.putExtra("name", "$NAME")
                         seeMorePendingIntent = PendingIntent.getActivity(
@@ -120,14 +119,13 @@ class MainActivity : AppCompatActivity() {
 
                 }
             }
-            //notificationManager.cancelAll()
             cursor.close()
 
         }
     }
 
     private fun download() {
-
+        custom_button.buttonState = ButtonState.Loading
         val request =
             DownloadManager.Request(Uri.parse(URL))
                 .setTitle(getString(R.string.app_name))
@@ -139,7 +137,6 @@ class MainActivity : AppCompatActivity() {
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
-
         URL?.let { Log.i("activityMain", it) }
     }
 
@@ -158,6 +155,7 @@ class MainActivity : AppCompatActivity() {
 
         notify(0, builder.build())
     }
+
     companion object {
         private var URL: String? = null
         private var NAME: String? = null
